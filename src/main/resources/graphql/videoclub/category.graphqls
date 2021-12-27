@@ -1,0 +1,6 @@
+# Describes a movie category
+type Category {
+    id: ID!
+    name: String!
+    moviesInCategory: [MovieTitle!]
+}

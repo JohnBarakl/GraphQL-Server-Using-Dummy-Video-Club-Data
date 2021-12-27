@@ -1,0 +1,12 @@
+# Describes a movie in the abstract sense, as concept
+type MovieTitle {
+    id: ID!
+    title: String!
+    description: String
+    releaseDate: Date
+    director: [Director!]!
+    actors: [Actor!]!
+    category: [Category!]!
+    producedBy: [ProductionCompany!]
+    rating: Float
+}

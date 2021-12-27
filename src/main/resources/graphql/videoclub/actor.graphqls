@@ -1,0 +1,6 @@
+# Describes an actor
+type Actor {
+    id: ID!
+    name: String!
+    moviesPlayedIn: [MovieTitle!]
+}

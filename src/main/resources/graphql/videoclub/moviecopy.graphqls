@@ -1,0 +1,24 @@
+# Describes the physical medium the copy of a movie
+# can be.
+enum Medium {
+    Dvd
+    CD
+    BlueRay
+    HD_DVD
+    Cassette
+}
+
+# Describes the format of a movie
+enum MovieCopyType {
+    SD
+    HD
+    T3D
+    SurroundSound
+}
+
+# Describes a physical copy of a movie a customer can rent/buy
+type MovieCopy {
+    id: ID!
+    medium: Medium!
+    copyType: [MovieCopyType!]!
+}

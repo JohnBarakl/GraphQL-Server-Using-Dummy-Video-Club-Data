@@ -1,0 +1,7 @@
+scalar Date
+scalar DateTime
+
+# All available queries on this graphql server
+type Query {
+    getCustomer(id: ID): Customer
+}

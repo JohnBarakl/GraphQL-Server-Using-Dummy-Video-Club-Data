@@ -1,0 +1,6 @@
+# Describes a production company
+type ProductionCompany {
+    id: ID!
+    name: String!
+    moviesProduced: [MovieTitle!]
+}

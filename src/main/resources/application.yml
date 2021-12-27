@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: Dummy-VideoClub-GraphQL-Server
+
+server:
+  http2:
+    enabled: true
+
+graphql:
+  servlet:
+    maxQueryDepth: 100
+    exception-handlers-enabled: false
+  playground:
+    enabled: true

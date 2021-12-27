@@ -1,0 +1,14 @@
+# Describes a rent transaction
+type rentStatement {
+    id: ID!
+
+    customer: Customer!
+
+    movie: MovieCopy!
+
+    # Date when the movie copy was rented
+    dateFrom: DateTime!
+
+    # Date when the movie copy was returned. If null then it still is being rented.
+    dateTo: DateTime
+}

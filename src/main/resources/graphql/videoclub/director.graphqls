@@ -1,0 +1,6 @@
+# Describes a director
+type Director {
+    id: ID!
+    name: String!
+    moviesDirected: [MovieTitle!]
+}
