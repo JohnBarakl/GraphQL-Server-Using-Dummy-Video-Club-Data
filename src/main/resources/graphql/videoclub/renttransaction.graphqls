@@ -1,0 +1,22 @@
+# Describes a rent transaction.
+type RentTransaction {
+    # The statement's unique identifier (it is an integer).
+    id: ID!
+
+    # The customer that made this transaction.
+    customer: Customer!
+
+    # The movie copy that the customer rented.
+    movie: MovieCopy!
+
+    # The price (per day) of the rent.
+    price: Float!
+
+    # The date and time when the movie copy was rented
+    # This is a date-time with an offset from UTC/Greenwich in the ISO-8601 calendar system, such as 2007-12-03T10:15:30+01:00
+    dateFrom: DateTime!
+
+    # The date when the movie copy was returned. If null then it still is being rented.
+    # This is a date-time with an offset from UTC/Greenwich in the ISO-8601 calendar system, such as 2007-12-03T10:15:30+01:00
+    dateTo: DateTime
+}

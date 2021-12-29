@@ -3,5 +3,7 @@ scalar DateTime
 
 # All available queries on this graphql server
 type Query {
-    getCustomer(id: ID): Customer
+    # Returns one or more customers that match the arguments
+    # If all arguments provided are null, it returns all customers.
+    getCustomer(id: ID, name: String): [Customer]
 }

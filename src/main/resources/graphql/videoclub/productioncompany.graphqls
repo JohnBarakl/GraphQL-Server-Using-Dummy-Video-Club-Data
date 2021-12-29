@@ -1,6 +1,11 @@
 # Describes a production company
 type ProductionCompany {
+    # The production company's unique identifier (it is an integer).
     id: ID!
+
+    # The production company's name.
     name: String!
+
+    # A list of the movies this production company produced.
     moviesProduced: [MovieTitle!]
 }

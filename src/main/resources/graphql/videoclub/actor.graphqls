@@ -1,6 +1,11 @@
 # Describes an actor
 type Actor {
+    # The actor's unique identifier (it is an integer).
     id: ID!
+
+    # The actor's name.
     name: String!
+
+    # A list of the (registered) movies the actor has performed in.
     moviesPlayedIn: [MovieTitle!]
 }

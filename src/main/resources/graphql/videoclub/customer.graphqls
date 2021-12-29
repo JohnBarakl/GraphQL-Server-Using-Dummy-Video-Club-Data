@@ -1,13 +1,15 @@
 # Describes a customer that rents movies from the video club.
 type Customer {
-    # The customer's unique identifier
+    # The customer's unique identifier (it is an integer).
     id: ID!
 
     # The customer's full name.
     # If the customer has multiple first and/or last names, only one can be registered.
     fullName: String!
 
-    dateOfBirth: Int
+    # The customer's date of birth.
+    # The format of this date should be of the ISO-8601 calendar system, such as 2007-12-03.
+    dateOfBirth: Date
 
     # The full address where the customer lives. Can include any of: Address, Number, Area, City, Country, Area code, etc.
     address: String!
@@ -15,7 +17,23 @@ type Customer {
     # The customer's phone number in any format.
     phoneNumber: String!
 
+    # The customer's e-mail address.
     email: String
 
+    # A list of the transactions the customer has participated in.
+    rentTransactions(status: TransactionStatus): [RentTransaction!]
+}
 
+# Defines a rentTransaction status.
+enum TransactionStatus{
+    # Defines all transactions that have been completed.
+    # For example, a completed rent. A completed rent means that a customer rented a movie and then returned it.
+    Completed
+
+    # Defines all transactions that have not been completed.
+    # For example, an incomplete rent. A incomplete rent means that a customer rented a movie and has not yet returned it.
+    Active
+
+    # Defines all transactions. Superset of Completed an Active.
+    All
 }

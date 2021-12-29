@@ -1,6 +1,11 @@
 # Describes a movie category
 type Category {
+    # The category's unique identifier (it is an integer).
     id: ID!
+
+    # The category's name.
     name: String!
+
+    # A list of movies that are characterized by this category.
     moviesInCategory: [MovieTitle!]
 }

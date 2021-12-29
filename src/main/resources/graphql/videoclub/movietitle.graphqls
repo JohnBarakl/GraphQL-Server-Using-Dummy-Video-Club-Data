@@ -1,12 +1,30 @@
-# Describes a movie in the abstract sense, as concept
+# Describes a movie in the abstract sense, as in a movie and not a (physical) movie copy.
 type MovieTitle {
+    # The movie's unique identifier (it is an integer).
     id: ID!
+
+    # The movie's title.
     title: String!
+
+    # The movie's description. It may span many lines.
     description: String
+
+    # The movie's release date.
+    # The format of this date should be of the ISO-8601 calendar system, such as 2007-12-03.
     releaseDate: Date
+
+    # The movie's director(s).
     director: [Director!]!
+
+    # The movie's actor(s).
     actors: [Actor!]!
+
+    # The category(-ies) that characterize the movie.
     category: [Category!]!
+
+    # The production company(-ies) that produce the movie.
     producedBy: [ProductionCompany!]
+
+    # The movie's rating (arbitrary source).
     rating: Float
 }

@@ -1,6 +1,11 @@
 # Describes a director
 type Director {
+    # The director's unique identifier (it is an integer).
     id: ID!
+
+    # The director's name.
     name: String!
+
+    # A list of movies that are directed by this director.
     moviesDirected: [MovieTitle!]
 }
