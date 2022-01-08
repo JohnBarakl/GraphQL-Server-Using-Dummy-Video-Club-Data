@@ -20,7 +20,7 @@ type MovieTitle {
     actors: [Actor!]!
 
     # The category(-ies) that characterize the movie.
-    category: [Category!]!
+    inCategory: [Category!]!
 
     # The production company(-ies) that produce the movie.
     producedBy: [ProductionCompany!]

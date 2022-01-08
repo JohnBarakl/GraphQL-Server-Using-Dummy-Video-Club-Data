@@ -14,8 +14,16 @@ public class Director {
      * @param id The director's unique identifier.
      * @param name The director's name.
      */
-    public Director(Integer id, String name, MovieTitle[] moviesDirected) {
+    public Director(Integer id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }

@@ -13,7 +13,7 @@ public class Actor {
      * @param id The actor's unique identifier.
      * @param name The actor's name.
      */
-    public Actor(Integer id, String name, MovieTitle[] moviesPlayedIn) {
+    public Actor(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -26,4 +26,11 @@ public class Actor {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return "Actor{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

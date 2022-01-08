@@ -45,4 +45,20 @@ public class MovieCopy {
         this.copyType = copyType;
         this.rentPrice = rentPrice;
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Medium getMedium() {
+        return medium;
+    }
+
+    public MovieFormat getCopyType() {
+        return copyType;
+    }
+
+    public Float getRentPrice() {
+        return rentPrice;
+    }
 }

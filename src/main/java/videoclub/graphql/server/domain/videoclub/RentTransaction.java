@@ -8,8 +8,6 @@ import java.time.OffsetDateTime;
  */
 public class RentTransaction {
     Integer id; // The statement's unique identifier.
-    Customer customer; // The customer that made this transaction.
-    MovieCopy movie; // The movie copy that the customer rented.
     Float price; // The price (per day) of the rent.
     OffsetDateTime dateFrom; // The date when the movie copy was rented
     OffsetDateTime dateTo; // The date when the movie copy was returned.
@@ -17,19 +15,31 @@ public class RentTransaction {
     /**
      * Builds a RentTransaction object and sets its fields according to the arguments.
      * @param id The statement's unique identifier.
-     * @param customer The customer that made this transaction.
-     * @param movie The movie copy that the customer rented.
      * @param price The price (per day) of the rent.
      * @param dateFrom The date when the movie copy was rented
      * @param dateTo The date when the movie copy was returned.
      *               <p>If null then it still is being rented.</p>
      */
-    public RentTransaction(Integer id, Customer customer, MovieCopy movie, Float price, OffsetDateTime dateFrom, OffsetDateTime dateTo) {
+    public RentTransaction(Integer id, Float price, OffsetDateTime dateFrom, OffsetDateTime dateTo) {
         this.id = id;
-        this.customer = customer;
-        this.movie = movie;
         this.price = price;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public OffsetDateTime getDateFrom() {
+        return dateFrom;
+    }
+
+    public OffsetDateTime getDateTo() {
+        return dateTo;
     }
 }

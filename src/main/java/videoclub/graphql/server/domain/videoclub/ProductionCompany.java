@@ -13,8 +13,16 @@ public class ProductionCompany {
      * @param id The production company's unique identifier.
      * @param name The production company's name.
      */
-    public ProductionCompany(Integer id, String name, MovieTitle[] moviesProduced) {
+    public ProductionCompany(Integer id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }

@@ -13,8 +13,16 @@ public class Category {
      * @param id The category's unique identifier.
      * @param name The category's name.
      */
-    public Category(Integer id, String name, MovieTitle[] movesInCategory) {
+    public Category(Integer id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }
