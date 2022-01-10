@@ -20,6 +20,9 @@ type MovieCopy {
     # The movie copy's unique identifier (it is an integer).
     id: ID!
 
+    # The movie title that this copy contains.
+    movieTitle: MovieTitle!
+
     # The copy's physical medium type.
     medium: Medium!
 

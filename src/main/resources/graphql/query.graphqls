@@ -5,5 +5,44 @@ scalar DateTime
 type Query {
     # Returns one or more customers that match the arguments
     # If all arguments provided are null, it returns all customers.
-    getCustomer(id: ID, name: String): [Customer]
+    getCustomer(id: ID, name: String): [Customer!]
+
+    # Returns the category entity(-ies) with the specified name
+    # If the argument is null, it acts as a wildcard and all registered categories are returned.
+    getCategory(name: String): [Category!]
+
+    # Returns the actor entity(-ies) with the specified name
+    # If the argument is null, it acts as a wildcard and all registered categories are returned.
+    getActor(name: String): [Actor!]
+
+    # Returns the director entity(-ies) with the specified name
+    # If the argument is null, it acts as a wildcard and all registered categories are returned.
+    getDirector(name: String): [Actor!]
+
+    # Returns one (or more) movie copies.
+    # If the id argument is used, the others will be ignored.
+    # Otherwise, a list containing movie copies that satisfy all of the arguments will be returned.
+    getMovieCopy(id: ID, MovieName: String, medium: Medium, format: MovieFormat): [MovieCopy!]
+
+    # Returns the list of movies with rent price between from and upTo.
+    # If one of the price limits is null, there will be no lower and/or upper limit respectively.
+    getMoviesByPrice(from:Float, upTo: Float): [MovieTitle!]
+
+    # Returns one (or more) movie titles.
+    # If the id argument is used, the others will be ignored.
+    # Otherwise, a list containing movie titles that satisfy all of the arguments will be returned.
+    getMovies(id: ID, title: String, releaseDate: Date, directorNames: [String!], actorNames: [String!], categoryNames: [String!], productionCompanyNames:[String!], ratingFrom: Float, ratingTo: Float): [MovieTitle!]
+
+    # Returns one (or more) production companies.
+    # If the id argument is used, the others will be ignored.
+    # Otherwise, a list containing production companies that satisfy all of the arguments will be returned.
+    getProductionCompany(id: ID, name: String): [ProductionCompany!]
+
+    # Returns one (or more) rentTransactions companies.
+    # If the id argument is used, the others will be ignored.
+    # Otherwise, a list containing rentTransactions that satisfy all of the arguments will be returned.
+    #
+    # Notice: Customer and MovieCopy parameters are not provided. Instead use the fields of the specified
+    # types.
+    getRents(id: ID, priceFrom: Float, priceTo: Float, dateFrom: DateTime, dateTo: DateTime): [RentTransaction!]
 }

@@ -48,7 +48,7 @@ public class Data {
                 .append("where MovieTitleParticipants.participationRole = \"Actor\" ");
 
         if (actor.getId() != null){ // id is provided
-            sqlQuery.append(String.format("and id = %d ", actor.getId()));
+            sqlQuery.append(String.format("and id = %dataSource ", actor.getId()));
         }
 
         if (actor.getName() != null){ // Actor's name is provided.
@@ -72,7 +72,7 @@ public class Data {
                 .append("where MovieTitleParticipants.participationRole = \"Director\" ");
 
         if (director.getId() != null){ // id is provided
-            sqlQuery.append(String.format("and id = %d ", director.getId()));
+            sqlQuery.append(String.format("and id = %dataSource ", director.getId()));
         }
 
         if (director.getName() != null){ // Actor's name is provided.
@@ -100,9 +100,9 @@ public class Data {
             }
         } else { // id provided.
             if (category.getName() == null){ // Only id is provided.
-                sqlQuery += String.format("where id = '%d'", category.getId());
+                sqlQuery += String.format("where id = '%dataSource'", category.getId());
             } else { // Both id and name provided.
-                sqlQuery += String.format("where id = '%d' and name = '%s'", category.getId(), category.getName());
+                sqlQuery += String.format("where id = '%dataSource' and name = '%s'", category.getId(), category.getName());
             }
         }
 
@@ -268,7 +268,7 @@ public class Data {
 
         String sqlQuery = String.format("select Category.id, Category.name " +
                                         "from Category inner join inCategory on Category.id = inCategory.Category_id " +
-                                        "where inCategory.MovieTitle_id = %d", movieTitle.getId());
+                                        "where inCategory.MovieTitle_id = %dataSource", movieTitle.getId());
 
         return executeCategoryRetrievalQuery(sqlQuery);
     }
@@ -287,9 +287,9 @@ public class Data {
             throw new IllegalArgumentException("The CategoryId must not be null.");
         }
 
-        String sqlQuery = String.format("select select id, title, description, releaseDate, rating " +
+        String sqlQuery = String.format("select MovieTitle.id, MovieTitle.title, MovieTitle.description, MovieTitle.releaseDate, MovieTitle.rating " +
                                         "from MovieTitle inner join inCategory on MovieTitle.id = inCategory.MovieTitle_id " +
-                                        "where inCategory.Category_id = %d", category.getId());
+                                        "where inCategory.Category_id = %dataSource", category.getId());
 
         return executeMovieTitleRetrievalQuery(sqlQuery);
     }
@@ -319,24 +319,23 @@ public class Data {
 
     /**
      * Retrieves the list of registered directors that directed the movie given.
-     * @param director The Movie entity which is referenced.
+     * @param movieTitle The Movie entity which is referenced.
      * @return A list of Directors directing the movie.
      * @throws SQLException If a database access error occurs.
      * @throws IllegalArgumentException If there is an error in the Director object fields.
      */
-    public Director[] retrieveDirectorsOfMovieTitle(Director director) throws SQLException {
-        StringBuilder sqlQuery = new StringBuilder();
-        sqlQuery.append("select id, title, description, releaseDate, rating ")
-                .append("from MovieTitle inner join MovieTitleParticipants on MovieTitleParticipants.MovieTitle_id = MovieTitle.id ")
-                .append("where MovieTitleParticipants.Person_id = ").append(director.getId())
-                .append(" and MovieTitleParticipants.participationRole = \"Director\"");
-
+    public Director[] retrieveDirectorsOfMovieTitle(MovieTitle movieTitle) throws SQLException {
         // A movie is uniquely identified by its id. If it is null, then an IllegalArgumentException is thrown.
-        if (director.getId() == null){
+        if (movieTitle.getId() == null){
             throw new IllegalArgumentException("The DirectorId must not be null.");
         }
 
-        return executeDirectorRetrievalQuery(sqlQuery.toString());
+        String sqlQuery = "select Person.id, Person.name " +
+                "from Person inner join MovieTitleParticipants on MovieTitleParticipants.Person_id = MovieTitle.id " +
+                "where MovieTitleParticipants.MovieTitle_id = " + movieTitle.getId() +
+                " and MovieTitleParticipants.participationRole = \"Director\""; // We want the directors of this movie. An actor may also be a director.
+
+        return executeDirectorRetrievalQuery(sqlQuery);
     }
 
     /**
@@ -347,18 +346,17 @@ public class Data {
      * @throws IllegalArgumentException If there is an error in the Actor object fields.
      */
     public MovieTitle[] retrieveMovieTitlesOfActor(Actor actor) throws SQLException {
-        StringBuilder sqlQuery = new StringBuilder();
-        sqlQuery.append("select id, title, description, releaseDate, rating ")
-                .append("from MovieTitle inner join MovieTitleParticipants on MovieTitleParticipants.MovieTitle_id = MovieTitle.id ")
-                .append("where MovieTitleParticipants.Person_id = ").append(actor.getId())
-                .append(" and MovieTitleParticipants.participationRole = \"Actor\"");
+        String sqlQuery = "select MovieTitle.id, MovieTitle.title, MovieTitle.description, MovieTitle.releaseDate, MovieTitle.rating " +
+                "from MovieTitle inner join MovieTitleParticipants on MovieTitleParticipants.MovieTitle_id = MovieTitle.id " +
+                "where MovieTitleParticipants.Person_id = " + actor.getId() +
+                " and MovieTitleParticipants.participationRole = \"Actor\"";
 
         // An actor object is uniquely identified by its id. If it is null, then an IllegalArgumentException is thrown.
         if (actor.getId() == null){
             throw new IllegalArgumentException("The ActorId must not be null.");
         }
 
-        return executeMovieTitleRetrievalQuery(sqlQuery.toString());
+        return executeMovieTitleRetrievalQuery(sqlQuery);
     }
 
     /**
@@ -370,7 +368,7 @@ public class Data {
      */
     public MovieTitle[] retrieveMovieTitlesOfDirector(Director director) throws SQLException {
         StringBuilder sqlQuery = new StringBuilder();
-        sqlQuery.append("select id, title, description, releaseDate, rating ")
+        sqlQuery.append("select MovieTitle.id, MovieTitle.title, MovieTitle.description, MovieTitle.releaseDate, MovieTitle.rating ")
                 .append("from MovieTitle inner join MovieTitleParticipants on MovieTitleParticipants.MovieTitle_id = MovieTitle.id ")
                 .append("where MovieTitleParticipants.Person_id = ").append(director.getId())
                 .append(" and MovieTitleParticipants.participationRole = \"Director\"");
@@ -401,9 +399,9 @@ public class Data {
             }
         } else { // id provided.
             if (productionCompany.getName() == null){ // Only id is provided.
-                sqlQuery.append(String.format("where id = '%d'", productionCompany.getId()));
+                sqlQuery.append(String.format("where id = '%dataSource'", productionCompany.getId()));
             } else { // Both id and name provided.
-                sqlQuery.append(String.format("where id = '%d' and name = '%s'",
+                sqlQuery.append(String.format("where id = '%dataSource' and name = '%s'",
                         productionCompany.getId(), productionCompany.getName()));
             }
         }
@@ -441,7 +439,7 @@ public class Data {
      * @throws SQLException If a database access error occurs.
      * @throws IllegalArgumentException If there is an error in the ProductionCompany object fields.
      */
-    public MovieTitle[] retrieveMovieTitlesOfActor(ProductionCompany productionCompany) throws SQLException, IllegalArgumentException {
+    public MovieTitle[] retrieveMovieTitlesOfProductionCompany(ProductionCompany productionCompany) throws SQLException, IllegalArgumentException {
 
         // An actor object is uniquely identified by its id. If it is null, then an IllegalArgumentException is thrown.
         if (productionCompany.getId() == null){
@@ -449,7 +447,7 @@ public class Data {
         }
 
         StringBuilder sqlQuery = new StringBuilder();
-        sqlQuery.append("select id, title, description, releaseDate, rating ")
+        sqlQuery.append("select MovieTitle.id, MovieTitle.title, MovieTitle.description, MovieTitle.releaseDate, MovieTitle.rating ")
                 .append("from MovieTitle inner join producedBy on producedBy.MovieTitle_id = MovieTitle.id ")
                 .append("where producedBy.ProductionCompany_id = ").append(productionCompany.getId());
 
@@ -561,20 +559,152 @@ public class Data {
 
         String sqlQuery = String.format("select id, price, dateFrom, dateTo " +
                                         "from RentTransaction " +
-                                        "where MovieCopy_id = %d", movieCopy.getId());
+                                        "where MovieCopy_id = %dataSource", movieCopy.getId());
 
         return executeRentTransactionRetrievalQuery(sqlQuery);
     }
 
-    // TODO: retrieval of customer from rentTransaction
+    /**
+     * Retrieves the customer involved in the transaction of the argument.
+     * @param rentTransaction The rent transaction that involves a customer.
+     * @return A Customer entity.
+     * @throws SQLException If a database access error occurs.
+     */
+    public Customer retrieveCustomerFromTransaction(RentTransaction rentTransaction) throws SQLException {
+        // A rent transaction object is uniquely identified by its id. If it is null, then an IllegalArgumentException is thrown.
+        if (rentTransaction.getId() == null){
+            throw new IllegalArgumentException("The RentTransactionId must not be null.");
+        }
 
-    // TODO: retrieval of moviecopy from rentTransaction
+        String sqlQuery = "select Customer.id, Customer.fullName, Customer.dateOfBirth, Customer.address, Customer.phoneNumber, Customer.email " +
+                          "from Customer " +
+                          "where Customer.id = (select Customer_id from RentTransaction where id = " + rentTransaction.getId() + " )";
 
-    // TODO: retrieval of moviecopy from template
+        return executeCustomerRetrievalQuery(sqlQuery)[0];
+    }
 
-    // TODO: retrieval of moviecopy from movie title
+    /**
+     * Retrieves the movie copy involved in the transaction of the argument.
+     * @param rentTransaction The rent transaction that involves a customer.
+     * @return A MovieCopy entity.
+     * @throws SQLException If a database access error occurs.
+     */
+    public MovieCopy retrieveMovieCopyFromTransaction(RentTransaction rentTransaction) throws SQLException {
+        // A rent transaction object is uniquely identified by its id. If it is null, then an IllegalArgumentException is thrown.
+        if (rentTransaction.getId() == null){
+            throw new IllegalArgumentException("The RentTransactionId must not be null.");
+        }
 
-    // TODO: retrieval of movieTitle from moviecopy
+        String sqlQuery = "select MovieCopy.id, Medium.name as \"MediumName\", MovieFormat.name as \"FormatName\", rentPrice " +
+                          "from MovieCopy inner join Medium on Medium_id = Medium.id " +
+                          "               inner join MovieFormat on MovieFormat_id = MovieFormat.id " +
+                          "where MovieCopy.id = (select MovieCopy_id from RentTransaction where id = " + rentTransaction.getId() + " )";
+
+        return executeMovieCopyRetrievalQuery(sqlQuery)[0];
+    }
+
+    /**
+     * Retrieves a number of movie copies that match the template given.
+     * @param movieCopy The MovieCopy template that will be used for selection of the movie copies loaded from the database.
+     *                  <p>Any object fields that have the value null will be substituted for any value</p>
+     * @return A list of MovieCopy entities that match the template given as argument.
+     * @throws SQLException If a database access error occurs.
+     */
+    public MovieCopy[] retrieveMovieCopy(MovieCopy movieCopy) throws SQLException {
+        StringBuilder sqlQuery = new StringBuilder();
+        sqlQuery.append("select MovieCopy.id, Medium.name as \"MediumName\", MovieFormat.name as \"FormatName\", rentPrice ")
+                .append("from MovieCopy inner join Medium on Medium_id = Medium.id ")
+                .append("               inner join MovieFormat on MovieFormat_id = MovieFormat.id ");
+
+        // Controls whether the final query will retrieve all movie copies or will filter the results first.
+        boolean getAll = true;
+
+        // Check if it has been given an id filter.
+        if (movieCopy.getId() != null){
+            getAll = false;
+            sqlQuery.append("where MovieCopy.id = ").append(movieCopy.getId());
+        }
+
+        // Check if it has been given a medium filter.
+        if (movieCopy.getMedium() != null){
+            if (getAll) { // If it has another filter to chain into where condition.
+                getAll = false;
+                sqlQuery.append("where ");
+            } else {
+                sqlQuery.append(" and");
+            }
+
+            sqlQuery.append(" MediumName = \"").append(movieCopy.getMedium().toString()).append("\"");
+        }
+
+        // Check if it has been given a copy type filter.
+        if (movieCopy.getCopyType() != null){
+            if (getAll) { // If it has another filter to chain into where condition.
+                getAll = false;
+                sqlQuery.append("where ");
+            } else {
+                sqlQuery.append(" and");
+            }
+
+            sqlQuery.append(" FormatName = \"").append(movieCopy.getCopyType().toString()).append("\"");
+        }
+
+        // Check if it has been given a rentPrice filter.
+        if (movieCopy.getRentPrice() != null){
+            if (getAll) { // If it has another filter to chain into where condition.
+                getAll = false;
+                sqlQuery.append("where ");
+            } else {
+                sqlQuery.append(" and");
+            }
+
+            sqlQuery.append(" rentPrice = ").append(movieCopy.getRentPrice());
+        }
+
+        return executeMovieCopyRetrievalQuery(sqlQuery.toString());
+    }
+
+    /**
+     * Retrieves the list of movie copies that contain this movie title.
+     * @param movieTitle The movie title.
+     * @return A list of MovieCopy entities.
+     * @throws SQLException If a database access error occurs.
+     */
+    public MovieCopy[] retrieveMovieCopiesOfMovieTitle(MovieTitle movieTitle) throws SQLException {
+        // A movie title object is uniquely identified by its id. If it is null, then an IllegalArgumentException is thrown.
+        if (movieTitle.getId() == null){
+            throw new IllegalArgumentException("The MovieTitleId must not be null.");
+        }
+
+        String sqlQuery = "select MovieCopy.id, Medium.name as \"MediumName\", MovieFormat.name as \"FormatName\", rentPrice " +
+                          "from MovieCopy inner join Medium on Medium_id = Medium.id " +
+                          "               inner join MovieFormat on MovieFormat_id = MovieFormat.id " +
+                          "where MovieCopy.MovieTitle_id = " + movieTitle.getId();
+
+        return executeMovieCopyRetrievalQuery(sqlQuery);
+    }
+
+    /**
+     * Retrieves the list of movies in the category.
+     * @param movieCopy The Category entity which is referenced.
+     * @return A list of MovieTitle entities that are in this Category.
+     * @throws SQLException If a database access error occurs.
+     * @throws IllegalArgumentException If there is an error in the Category object fields.
+     */
+    public MovieTitle retrieveMovieTitleOfMovieCopy(MovieCopy movieCopy) throws SQLException, IllegalArgumentException {
+
+        // A category is uniquely identified by its id. If it is null, then an IllegalArgumentException is thrown.
+        if (movieCopy.getId() == null){
+            throw new IllegalArgumentException("The MovieCopyId must not be null.");
+        }
+
+        StringBuilder sqlQuery = new StringBuilder();
+        sqlQuery.append("select id, title, description, releaseDate, rating ")
+                .append("from MovieTitle ")
+                .append("where id = (select MovieTitle_id from MovieCopy where id = ").append(movieCopy.getId()).append(")");
+
+        return executeMovieTitleRetrievalQuery(sqlQuery.toString())[0];
+    }
 
     /**
      * Executes the given query and returns the list of actor object created.
@@ -721,12 +851,36 @@ public class Data {
         ArrayList<RentTransaction> rentTransactions = new ArrayList<>();
         // Running through the results and constructing Customer objects with the returned data.
         while (qResults.next()){
-            rentTransactions.add(new RentTransaction(qResults.getInt(3), qResults.getFloat(4),
-                    OffsetDateTime.parse(qResults.getString(5)),
-                    qResults.getString(6)!=null?OffsetDateTime.parse(qResults.getString(6)):null));
+            rentTransactions.add(new RentTransaction(qResults.getInt(1), qResults.getFloat(2),
+                    OffsetDateTime.parse(qResults.getString(3)),
+                    qResults.getString(4)!=null?OffsetDateTime.parse(qResults.getString(4)):null));
         }
 
         return rentTransactions.toArray(new RentTransaction[0]);
+    }
+
+    /**
+     * Executes the given query and returns the list of MovieCopy object created.
+     * WARNING: The MovieCopy and MovieFormat must be requested as strings and not ids.
+     *
+     * @param query The sql query to be executed.
+     * @return The list of MovieCopy objects retrieved.
+     */
+    private MovieCopy[] executeMovieCopyRetrievalQuery(String query) throws SQLException {
+        // Asserting synchronization of database accesses.
+        ResultSet qResults;
+        synchronized (this){
+            qResults = queryEndpoint.executeQuery(query.toString());
+        }
+
+        ArrayList<MovieCopy> movieCopies = new ArrayList<>();
+        // Running through the results and constructing Customer objects with the returned data.
+        while (qResults.next()){
+            movieCopies.add(new MovieCopy(qResults.getInt(1), MovieCopy.Medium.valueOf(qResults.getString(2)), MovieCopy.MovieFormat.valueOf(qResults.getString(3)),
+                    qResults.getFloat(4)));
+        }
+
+        return movieCopies.toArray(new MovieCopy[0]);
     }
 
     /**
@@ -737,7 +891,7 @@ public class Data {
         Actor a = new Actor(null, "Sterling Hayden");
 
         try {
-            //Data d = new Data("/home/john/Documents/Μαθήματα/5ο Εξάμηνο/Μηχανική Λογισμικού/Εργασία Εξαμήνου/GraphQL_Project/database/video_club.sqlite");
+            //Data dataSource = new Data("/home/john/Documents/Μαθήματα/5ο Εξάμηνο/Μηχανική Λογισμικού/Εργασία Εξαμήνου/GraphQL_Project/database/video_club.sqlite");
             Data d = new Data("database/video_club.sqlite");
 
             Actor[] aa = d.retrieveActors(a);

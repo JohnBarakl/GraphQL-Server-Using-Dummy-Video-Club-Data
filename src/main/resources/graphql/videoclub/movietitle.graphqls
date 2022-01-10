@@ -14,13 +14,13 @@ type MovieTitle {
     releaseDate: Date
 
     # The movie's director(s).
-    director: [Director!]!
+    directors: [Director!]
 
     # The movie's actor(s).
-    actors: [Actor!]!
+    actors: [Actor!]
 
     # The category(-ies) that characterize the movie.
-    inCategory: [Category!]!
+    inCategory: [Category!]
 
     # The production company(-ies) that produce the movie.
     producedBy: [ProductionCompany!]
