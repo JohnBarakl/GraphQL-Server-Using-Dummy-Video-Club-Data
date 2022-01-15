@@ -1,0 +1,8 @@
+input ReturnInput{
+    # The rent statement's unique identifier (it is an integer).
+    # It must be of non completed transaction (with no return date).
+    rentID: ID!
+
+    # The return date of the movie copy. The termination of rent.
+    date: DateTime!
+}

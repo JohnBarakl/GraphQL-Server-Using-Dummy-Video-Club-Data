@@ -12,3 +12,8 @@ graphql:
     exception-handlers-enabled: false
   playground:
     enabled: true
+    tabs:
+      - name: Complex query
+        query: classpath:exampleQueries/example1.graphql
+      - name: Insert query
+        query: classpath:exampleQueries/example2.graphql

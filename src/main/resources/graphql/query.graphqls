@@ -5,37 +5,41 @@ scalar DateTime
 type Query {
     # Returns one or more customers that match the arguments
     # If all arguments provided are null, it returns all customers.
+    # If id is provided, other arguments are ignored.
     getCustomer(id: ID, name: String): [Customer!]
 
     # Returns the category entity(-ies) with the specified name
     # If the argument is null, it acts as a wildcard and all registered categories are returned.
-    getCategory(name: String): [Category!]
+    # If id is provided, other arguments are ignored.
+    getCategory(id: ID, name: String): [Category!]
 
     # Returns the actor entity(-ies) with the specified name
     # If the argument is null, it acts as a wildcard and all registered categories are returned.
-    getActor(name: String): [Actor!]
+    # If id is provided, other arguments are ignored.
+    getActor(id: ID, name: String): [Actor!]
 
     # Returns the director entity(-ies) with the specified name
     # If the argument is null, it acts as a wildcard and all registered categories are returned.
-    getDirector(name: String): [Actor!]
+    # If id is provided, other arguments are ignored.
+    getDirector(id: ID, name: String): [Director!]
 
     # Returns one (or more) movie copies.
     # If the id argument is used, the others will be ignored.
     # Otherwise, a list containing movie copies that satisfy all of the arguments will be returned.
-    getMovieCopy(id: ID, MovieName: String, medium: Medium, format: MovieFormat): [MovieCopy!]
+    getMovieCopy(id: ID, movieName: String, medium: Medium, format: MovieFormat): [MovieCopy!]
 
-    # Returns the list of movies with rent price between from and upTo.
+    # Returns the list of movie copies with rent price between from and upTo.
     # If one of the price limits is null, there will be no lower and/or upper limit respectively.
-    getMoviesByPrice(from:Float, upTo: Float): [MovieTitle!]
+    getMovieCopiesByPrice(from:Float, upTo: Float): [MovieCopy!]
 
     # Returns one (or more) movie titles.
     # If the id argument is used, the others will be ignored.
-    # Otherwise, a list containing movie titles that satisfy all of the arguments will be returned.
-    getMovies(id: ID, title: String, releaseDate: Date, directorNames: [String!], actorNames: [String!], categoryNames: [String!], productionCompanyNames:[String!], ratingFrom: Float, ratingTo: Float): [MovieTitle!]
+    # Otherwise, a list containing movie titles that satisfy all of the arguments provided, will be returned.
+    getMovies(id: ID, title: String, releaseDate: Date, ratingFrom: Float, ratingTo: Float): [MovieTitle!]
 
     # Returns one (or more) production companies.
     # If the id argument is used, the others will be ignored.
-    # Otherwise, a list containing production companies that satisfy all of the arguments will be returned.
+    # Otherwise, a list containing production companies that satisfy all of the arguments provided, will be returned.
     getProductionCompany(id: ID, name: String): [ProductionCompany!]
 
     # Returns one (or more) rentTransactions companies.
@@ -44,5 +48,7 @@ type Query {
     #
     # Notice: Customer and MovieCopy parameters are not provided. Instead use the fields of the specified
     # types.
+    #
+    # The priceFrom and priceTo are considered the limits of ranges of prices. The same is true for dateFrom/dateTo.
     getRents(id: ID, priceFrom: Float, priceTo: Float, dateFrom: DateTime, dateTo: DateTime): [RentTransaction!]
 }

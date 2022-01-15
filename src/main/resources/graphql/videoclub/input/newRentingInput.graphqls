@@ -1,0 +1,13 @@
+input NewRentingInput {
+    # The id of the customer that rents a movie copy.
+    customerID: ID!
+
+    # The id of the movie copy being rented.
+    movieCopyID: ID!
+
+    # The price (per day) of the rent. If null, then the movieCopy's price will be inserted instead.
+    price: Float
+
+    # The date and time when the movie copy was rented
+    dateFrom: DateTime!
+}

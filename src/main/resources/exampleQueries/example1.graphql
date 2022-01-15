@@ -1,0 +1,12 @@
+query {
+    getRents(priceFrom: 3, priceTo: 10) {
+        movie {
+            id
+            movieTitle {
+                title
+            }
+            rentPrice
+            medium
+        }
+    }
+}

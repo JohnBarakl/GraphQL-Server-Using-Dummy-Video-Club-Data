@@ -1,4 +1,4 @@
-package videoclub.graphql.server.resolvers;
+package videoclub.graphql.server.resolvers.fields;
 
 import graphql.kickstart.tools.GraphQLResolver;
 import org.springframework.stereotype.Component;
@@ -21,6 +21,6 @@ public class DirectorFieldsResolver implements GraphQLResolver<Director> {
      * @throws SQLException If there is a communication error with the data source.
      */
     public MovieTitle[] moviesDirected(Director director) throws SQLException {
-        return Application.dataSource.retrieveMovieTitlesOfDirector(director);
+        return Application.dataSource.aboutMovieTitles().retrieveMovieTitlesOfDirector(director);
     }
 }

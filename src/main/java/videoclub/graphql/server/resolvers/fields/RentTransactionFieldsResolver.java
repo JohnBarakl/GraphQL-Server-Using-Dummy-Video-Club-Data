@@ -1,4 +1,4 @@
-package videoclub.graphql.server.resolvers;
+package videoclub.graphql.server.resolvers.fields;
 
 import graphql.kickstart.tools.GraphQLResolver;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ public class RentTransactionFieldsResolver implements GraphQLResolver<RentTransa
      * @throws SQLException If there is a communication error with the data source.
      */
     public Customer customer(RentTransaction rentTransaction) throws SQLException {
-        return Application.dataSource.retrieveCustomerFromTransaction(rentTransaction);
+        return Application.dataSource.aboutCustomers().retrieveCustomerFromTransaction(rentTransaction);
     }
 
     /**
@@ -33,6 +33,6 @@ public class RentTransactionFieldsResolver implements GraphQLResolver<RentTransa
      * @throws SQLException If there is a communication error with the data source.
      */
     public MovieCopy movie(RentTransaction rentTransaction) throws SQLException {
-        return Application.dataSource.retrieveMovieCopyFromTransaction(rentTransaction);
+        return Application.dataSource.aboutMovieCopies().retrieveMovieCopyFromTransaction(rentTransaction);
     }
 }

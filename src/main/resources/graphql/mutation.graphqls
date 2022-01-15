@@ -1,0 +1,15 @@
+# All available mutations on this graphql server
+type Mutation {
+    # Create a new customer
+    createCustomer(input: CreateCustomerInput!): Customer!
+
+    # Register a new rent.
+    registerNewRenting(input: NewRentingInput!): RentTransaction!
+
+    # Register a return of rented media.
+    registerReturn(input: ReturnInput!): RentTransaction!
+
+    # Register a new movie copy.
+    #TODO: Implement in server.
+    #registerNewMovieCopy(input: NewMovieCopyInput!): MovieCopy!
+}

@@ -1,4 +1,4 @@
-package videoclub.graphql.server.resolvers;
+package videoclub.graphql.server.resolvers.fields;
 
 import graphql.kickstart.tools.GraphQLResolver;
 import org.springframework.stereotype.Component;
@@ -43,9 +43,11 @@ public class CustomerFieldsResolver implements GraphQLResolver<Customer> {
     public RentTransaction[] rentTransactions(Customer customer, TransactionStatus status) throws SQLException {
         // No need to filter out results, return the whole list.
         if (status == TransactionStatus.All){
-            return Application.dataSource.retrieveRentTransactionsFromCustomer(customer);
+            return Application.dataSource.aboutRentTransactions().retrieveRentTransactionsFromCustomer(customer);
         } else if (status == TransactionStatus.Active){ // Filter out completed transactions.
-            ArrayList<RentTransaction> queryResults = new ArrayList<>(List.of(Application.dataSource.retrieveRentTransactionsFromCustomer(customer)));
+            ArrayList<RentTransaction> queryResults = new ArrayList<>(
+                    List.of(Application.dataSource.aboutRentTransactions().retrieveRentTransactionsFromCustomer(customer))
+            );
 
             Iterator<RentTransaction> transactionIterator = queryResults.iterator();
             while (transactionIterator.hasNext()){
@@ -58,7 +60,9 @@ public class CustomerFieldsResolver implements GraphQLResolver<Customer> {
 
             return queryResults.toArray(new RentTransaction[0]);
         } else { // Filter out incomplete transactions.
-            ArrayList<RentTransaction> queryResults = new ArrayList<>(List.of(Application.dataSource.retrieveRentTransactionsFromCustomer(customer)));
+            ArrayList<RentTransaction> queryResults = new ArrayList<>(
+                    List.of(Application.dataSource.aboutRentTransactions().retrieveRentTransactionsFromCustomer(customer))
+            );
 
             Iterator<RentTransaction> transactionIterator = queryResults.iterator();
             while (transactionIterator.hasNext()){

@@ -1,0 +1,19 @@
+# Input type for inputs regarding the creation of new customers.
+input CreateCustomerInput{
+    # The customer's full name.
+    # If the customer has multiple first and/or last names, only one can be registered.
+    fullName: String!
+
+    # The customer's date of birth.
+    # The format of this date should be of the ISO-8601 calendar system, such as 2007-12-03.
+    dateOfBirth: Date
+
+    # The full address where the customer lives. Can include any of: Address, Number, Area, City, Country, Area code, etc.
+    address: String!
+
+    # The customer's phone number in any format.
+    phoneNumber: String!
+
+    # The customer's e-mail address.
+    email: String
+}

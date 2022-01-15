@@ -1,4 +1,4 @@
-package videoclub.graphql.server.resolvers;
+package videoclub.graphql.server.resolvers.fields;
 
 import graphql.kickstart.tools.GraphQLResolver;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class MovieTitleFieldsResolver implements GraphQLResolver<MovieTitle> {
      * @throws SQLException If there is a communication error with the data source.
      */
     public Director[] directors(MovieTitle movieTitle) throws SQLException {
-        return Application.dataSource.retrieveDirectorsOfMovieTitle(movieTitle);
+        return Application.dataSource.aboutDirectors().retrieveDirectorsOfMovieTitle(movieTitle);
     }
 
     /**
@@ -32,7 +32,7 @@ public class MovieTitleFieldsResolver implements GraphQLResolver<MovieTitle> {
      * @throws SQLException If there is a communication error with the data source.
      */
     public Actor[] actors(MovieTitle movieTitle) throws SQLException {
-        return Application.dataSource.retrieveActorsOfMovieTitle(movieTitle);
+        return Application.dataSource.aboutActors().retrieveActorsOfMovieTitle(movieTitle);
     }
 
     /**
@@ -42,7 +42,7 @@ public class MovieTitleFieldsResolver implements GraphQLResolver<MovieTitle> {
      * @throws SQLException If there is a communication error with the data source.
      */
     public Category[] inCategory(MovieTitle movieTitle) throws SQLException {
-        return Application.dataSource.retrieveCategoriesOfMovieTitle(movieTitle);
+        return Application.dataSource.aboutCategories().retrieveCategoriesOfMovieTitle(movieTitle);
     }
 
     /**
@@ -52,6 +52,6 @@ public class MovieTitleFieldsResolver implements GraphQLResolver<MovieTitle> {
      * @throws SQLException If there is a communication error with the data source.
      */
     public ProductionCompany[] producedBy(MovieTitle movieTitle) throws SQLException {
-        return Application.dataSource.retrieveProductionCompanyOfMovieTitle(movieTitle);
+        return Application.dataSource.aboutProductionCompanies().retrieveProductionCompanyOfMovieTitle(movieTitle);
     }
 }
