@@ -20,4 +20,5 @@ public class ReturnInput {
     public OffsetDateTime getDate() {
         return date;
     }
+
 }

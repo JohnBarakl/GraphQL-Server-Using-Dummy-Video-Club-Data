@@ -15,5 +15,11 @@ graphql:
     tabs:
       - name: Complex query
         query: classpath:exampleQueries/example1.graphql
-      - name: Insert query
+      - name: Insert mutation
         query: classpath:exampleQueries/example2.graphql
+      - name: Change mutation
+        query: classpath:exampleQueries/example3.graphql
+      - name: Debug # TODO: REMOVE
+        query: classpath:exampleQueries/debug.graphql
+  voyager:
+    enabled: true

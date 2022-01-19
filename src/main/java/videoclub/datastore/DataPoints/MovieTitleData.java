@@ -182,7 +182,7 @@ public class MovieTitleData {
 
         String sqlQuery = String.format("select MovieTitle.id, MovieTitle.title, MovieTitle.description, MovieTitle.releaseDate, MovieTitle.rating " +
                 "from MovieTitle inner join inCategory on MovieTitle.id = inCategory.MovieTitle_id " +
-                "where inCategory.Category_id = %dataSource", category.getId());
+                "where inCategory.Category_id = %d ", category.getId());
 
         return executeMovieTitleRetrievalQuery(sqlQuery);
     }
@@ -243,7 +243,6 @@ public class MovieTitleData {
      * @throws SQLException  If a database access error occurs.
      */
     public MovieTitle[] retrieveMovieTitlesWithFiltering(String title, LocalDate releaseDate, Float ratingFrom, Float ratingTo) throws SQLException {
-        // TODO: Look again for second check!
 
         StringBuilder sqlQuery = new StringBuilder();
         sqlQuery.append("select id, title, description, releaseDate, rating ")
@@ -276,14 +275,13 @@ public class MovieTitleData {
 
         // If ratingFrom is null, no lower limit is imposed.
         if (ratingFrom == null){
-            if (getAll) { // If it has another filter to chain into where condition.
-                getAll = false;
-                sqlQuery.append("where ");
-            } else {
-                sqlQuery.append(" and");
-            }
-
             if (ratingTo != null){
+                if (getAll) { // If it has another filter to chain into where condition.
+                    getAll = false;
+                    sqlQuery.append("where ");
+                } else {
+                    sqlQuery.append(" and");
+                }
                 sqlQuery.append(" MovieTitle.rating <= ").append(ratingTo);
             }
             // If also upper limit is null, all movie copies are returned: No change to SQL query.

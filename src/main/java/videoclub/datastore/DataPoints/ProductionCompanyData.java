@@ -67,9 +67,9 @@ public class ProductionCompanyData {
             }
         } else { // id provided.
             if (productionCompany.getName() == null){ // Only id is provided.
-                sqlQuery.append(String.format("where id = '%dataSource'", productionCompany.getId()));
+                sqlQuery.append(String.format("where id = '%d'", productionCompany.getId()));
             } else { // Both id and name provided.
-                sqlQuery.append(String.format("where id = '%dataSource' and name = '%s'",
+                sqlQuery.append(String.format("where id = '%d' and name = '%s'",
                         productionCompany.getId(), productionCompany.getName()));
             }
         }

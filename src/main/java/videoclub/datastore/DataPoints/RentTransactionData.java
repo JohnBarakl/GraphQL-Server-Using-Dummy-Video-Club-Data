@@ -161,7 +161,7 @@ public class RentTransactionData {
 
         String sqlQuery = String.format("select id, price, dateFrom, dateTo " +
                 "from RentTransaction " +
-                "where MovieCopy_id = %dataSource", movieCopy.getId());
+                "where MovieCopy_id = %d ", movieCopy.getId());
 
         return executeRentTransactionRetrievalQuery(sqlQuery);
     }
@@ -326,7 +326,7 @@ public class RentTransactionData {
         }
 
         // Check if the given date is null
-        if (returnInput.getDate() != null){
+        if (returnInput.getDate() == null){
             throw new IllegalArgumentException("Return date required.");
         }
 

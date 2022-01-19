@@ -1,0 +1,14 @@
+# Input type for inputs regarding the creation of new movie copies.
+input NewMovieCopyInput{
+    # The movie title that this copy contains.
+    movieTitleId: ID!
+
+    # The copy's physical medium type.
+    medium: Medium!
+
+    # The copy's format.
+    copyType: MovieFormat!
+
+    # The price this movie is being rented for.
+    rentPrice: Float!
+}

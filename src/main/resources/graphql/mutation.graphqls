@@ -10,6 +10,9 @@ type Mutation {
     registerReturn(input: ReturnInput!): RentTransaction!
 
     # Register a new movie copy.
-    #TODO: Implement in server.
-    #registerNewMovieCopy(input: NewMovieCopyInput!): MovieCopy!
+    registerNewMovieCopy(input: NewMovieCopyInput!): MovieCopy!
+
+    # Delete a movie copy.
+    # Returns the success state of the operation.
+    deleteMovieCopy(input: DeleteMovieCopyInput!): Boolean
 }

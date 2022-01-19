@@ -66,9 +66,9 @@ public class CategoryData {
             }
         } else { // id provided.
             if (category.getName() == null){ // Only id is provided.
-                sqlQuery += String.format("where id = '%dataSource'", category.getId());
+                sqlQuery += String.format("where id = '%d'", category.getId());
             } else { // Both id and name provided.
-                sqlQuery += String.format("where id = '%dataSource' and name = '%s'", category.getId(), category.getName());
+                sqlQuery += String.format("where id = '%d' and name = '%s'", category.getId(), category.getName());
             }
         }
 
@@ -90,7 +90,7 @@ public class CategoryData {
 
         String sqlQuery = String.format("select Category.id, Category.name " +
                 "from Category inner join inCategory on Category.id = inCategory.Category_id " +
-                "where inCategory.MovieTitle_id = %dataSource", movieTitle.getId());
+                "where inCategory.MovieTitle_id = %d", movieTitle.getId());
 
         return executeCategoryRetrievalQuery(sqlQuery);
     }

@@ -1,3 +1,4 @@
+# Input type for inputs regarding the update of rents regarding the return of a movie copy.
 input ReturnInput{
     # The rent statement's unique identifier (it is an integer).
     # It must be of non completed transaction (with no return date).

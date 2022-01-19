@@ -1,9 +1,12 @@
 package videoclub.datastore.DataPoints;
 
 import videoclub.datastore.DataIntersection;
+import videoclub.graphql.server.domain.videoclub.Customer;
 import videoclub.graphql.server.domain.videoclub.MovieCopy;
 import videoclub.graphql.server.domain.videoclub.MovieTitle;
 import videoclub.graphql.server.domain.videoclub.RentTransaction;
+import videoclub.graphql.server.domain.videoclub.input.DeleteMovieCopyInput;
+import videoclub.graphql.server.domain.videoclub.input.NewMovieCopyInput;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,9 +37,10 @@ public class MovieCopyData {
      * WARNING: The MovieCopy and MovieFormat must be requested as strings and not ids.
      *
      * @param query The sql query to be executed.
+     * @param ignoreDeleted if true, the rows that have the column value deleted as 1, will not be returned.
      * @return The list of MovieCopy objects retrieved.
      */
-    private MovieCopy[] executeMovieCopyRetrievalQuery(String query) throws SQLException {
+    private MovieCopy[] executeMovieCopyRetrievalQuery(String query, boolean ignoreDeleted) throws SQLException {
         // Asserting synchronization of database accesses.
         ResultSet qResults;
         ArrayList<MovieCopy> movieCopies = new ArrayList<>();
@@ -45,6 +49,10 @@ public class MovieCopyData {
 
             // Running through the results and constructing Customer objects with the returned data.
             while (qResults.next()) {
+                // Ignore this row if it is marked as deleted and these kinds of objects are ignored.
+                if (qResults.getBoolean(5) && ignoreDeleted)
+                    continue;
+
                 movieCopies.add(new MovieCopy(qResults.getInt(1), MovieCopy.Medium.valueOf(qResults.getString(2)), MovieCopy.MovieFormat.valueOf(qResults.getString(3)),
                         qResults.getFloat(4)));
             }
@@ -65,16 +73,16 @@ public class MovieCopyData {
             throw new IllegalArgumentException("The RentTransactionId must not be null.");
         }
 
-        String sqlQuery = "select MovieCopy.id, Medium.name as \"MediumName\", MovieFormat.name as \"FormatName\", rentPrice " +
+        String sqlQuery = "select MovieCopy.id, Medium.name as \"MediumName\", MovieFormat.name as \"FormatName\", rentPrice, deleted " +
                 "from MovieCopy inner join Medium on Medium_id = Medium.id " +
                 "               inner join MovieFormat on MovieFormat_id = MovieFormat.id " +
                 "where MovieCopy.id = (select MovieCopy_id from RentTransaction where id = " + rentTransaction.getId() + " )";
 
-        return executeMovieCopyRetrievalQuery(sqlQuery)[0];
+        return executeMovieCopyRetrievalQuery(sqlQuery, false)[0];
     }
 
     /**
-     * Retrieves a number of movie copies that match the template given.
+     * Retrieves a number of movie copies that match the template given that are not flagged as deleted.
      * @param movieCopy The MovieCopy template that will be used for selection of the movie copies loaded from the database.
      *                  <p>Any object fields that have the value null will be substituted for any value</p>
      * @return A list of MovieCopy entities that match the template given as argument.
@@ -82,7 +90,7 @@ public class MovieCopyData {
      */
     public MovieCopy[] retrieveMovieCopy(MovieCopy movieCopy) throws SQLException {
         StringBuilder sqlQuery = new StringBuilder();
-        sqlQuery.append("select MovieCopy.id, Medium.name as \"MediumName\", MovieFormat.name as \"FormatName\", rentPrice ")
+        sqlQuery.append("select MovieCopy.id, Medium.name as \"MediumName\", MovieFormat.name as \"FormatName\", rentPrice, deleted ")
                 .append("from MovieCopy inner join Medium on Medium_id = Medium.id ")
                 .append("               inner join MovieFormat on MovieFormat_id = MovieFormat.id ");
 
@@ -131,7 +139,7 @@ public class MovieCopyData {
             sqlQuery.append(" rentPrice = ").append(movieCopy.getRentPrice());
         }
 
-        return executeMovieCopyRetrievalQuery(sqlQuery.toString());
+        return executeMovieCopyRetrievalQuery(sqlQuery.toString(), true);
     }
 
     /**
@@ -143,7 +151,7 @@ public class MovieCopyData {
      * @throws SQLException If a database access error occurs.
      */
     public MovieCopy[] retrieveMovieCopiesInPriceRange(Float priceFrom, Float priceTo) throws SQLException {
-        String sqlQuery = "select MovieCopy.id, Medium.name as \"MediumName\", MovieFormat.name as \"FormatName\", rentPrice " +
+        String sqlQuery = "select MovieCopy.id, Medium.name as \"MediumName\", MovieFormat.name as \"FormatName\", rentPrice, deleted " +
                           "from MovieCopy inner join Medium on Medium_id = Medium.id " +
                           "               inner join MovieFormat on MovieFormat_id = MovieFormat.id ";
 
@@ -160,7 +168,7 @@ public class MovieCopyData {
             }
         }
 
-        return executeMovieCopyRetrievalQuery(sqlQuery);
+        return executeMovieCopyRetrievalQuery(sqlQuery, false);
     }
 
     /**
@@ -175,12 +183,134 @@ public class MovieCopyData {
             throw new IllegalArgumentException("The MovieTitleId must not be null.");
         }
 
-        String sqlQuery = "select MovieCopy.id, Medium.name as \"MediumName\", MovieFormat.name as \"FormatName\", rentPrice " +
+        String sqlQuery = "select MovieCopy.id, Medium.name as \"MediumName\", MovieFormat.name as \"FormatName\", rentPrice, deleted " +
                 "from MovieCopy inner join Medium on Medium_id = Medium.id " +
                 "               inner join MovieFormat on MovieFormat_id = MovieFormat.id " +
                 "where MovieCopy.MovieTitle_id = " + movieTitle.getId();
 
-        return executeMovieCopyRetrievalQuery(sqlQuery);
+        return executeMovieCopyRetrievalQuery(sqlQuery, false);
     }
 
+    /**
+     * Creates a new movie copy in the database and returns the corresponding object.
+     * @param input The input object.
+     * @return the new movie copy just created and inserted in the database.
+     * @throws SQLException If a database access error occurs.
+     * @throws IllegalArgumentException if one or more required fields are missing.
+     */
+    public MovieCopy insertNewMovieCopy(NewMovieCopyInput input) throws SQLException {
+        StringBuilder columns = new StringBuilder();
+        StringBuilder values = new StringBuilder();
+
+        // Check if movie id was provided.
+        if (input.getMovieTitleId() == null){
+            throw new IllegalArgumentException("MovieTitleId required.");
+        } else {
+            columns.append("MovieTitle_id, ");
+            values.append("'").append(input.getMovieTitleId()).append("', ");
+        }
+
+        // Check if medium was provided.
+        if (input.getMedium() == null) {
+            throw new IllegalArgumentException("Medium required.");
+        } else {
+            int mediumId;
+            synchronized (queryEndpoint){ // "Lock" the database.
+                ResultSet rs = queryEndpoint.executeQuery( // Lookup of the id of the Medium in the database.
+                        "select id from Medium where name = '" + input.getMedium().toString() + "'"
+                );
+
+                // Assuming the database returned one and only row (medium names should be unique), extract the required id.
+                mediumId = rs.getInt(1);
+            }
+
+            columns.append("Medium_id, ");
+            values.append("'").append(mediumId).append("', ");
+        }
+
+        // Check if copyType was provided.
+        if (input.getCopyType() == null){
+            throw new IllegalArgumentException("CopyType required.");
+        } else {
+            int movieFormatId;
+            synchronized (queryEndpoint){ // "Lock" the database.
+                ResultSet rs = queryEndpoint.executeQuery( // Lookup of the id of the Format in the database.
+                        "select id from MovieFormat where name == '" + input.getCopyType().toString() + "'"
+                );
+
+                // Assuming the database returned one and only row (format names should be unique), extract the required id.
+                movieFormatId = rs.getInt(1);
+            }
+
+            columns.append("MovieFormat_id, ");
+            values.append("'").append(movieFormatId).append("', ");
+        }
+
+        // Check rentPrice was provided.
+        if (input.getRentPrice() == null){
+            throw new IllegalArgumentException("Rent price required.");
+        } else {
+            columns.append("rentPrice, ");
+            values.append("'").append(input.getRentPrice()).append("', ");
+        }
+
+        columns.replace(columns.length() - 2, columns.length(), "");
+        values.replace(values.length() - 2, values.length(), "");
+
+
+        String query = String.format("insert into MovieCopy ( %s ) %n" +
+                "values ( %s )", columns.toString(), values.toString());
+
+        int newMovieCopyId;
+
+        // Making sure there are no synchronization errors.
+        synchronized (queryEndpoint) {
+            queryEndpoint.execute(query);
+
+            // Query the database for all the valid ids. The one with the greatest value is the one just inserted.
+            String newIdQuery = "select id " +
+                    "from MovieCopy " +
+                    "order by id desc limit 1";
+
+            ResultSet qResults = queryEndpoint.executeQuery(newIdQuery);
+
+            newMovieCopyId = qResults.getInt(1);
+        }
+        // Searching and returning the new customer object by id.
+        // Only one is expected to be returned.
+        return retrieveMovieCopy(new MovieCopy(newMovieCopyId, null, null, null))[0];
+    }
+
+    /**
+     * Flags a  movie copy as deleted in the database and returns the operation's success state.
+     * @param input The input object.
+     * @return the operation's success state.
+     * @throws SQLException If a database access error occurs.
+     * @throws IllegalArgumentException if one or more required fields are missing.
+     */
+    public boolean deleteMovieCopy(DeleteMovieCopyInput input) throws SQLException {
+        int id;
+
+        // Check if movie copy id was provided.
+        if (input.getMovieCopyID() == null){
+            throw new IllegalArgumentException("MovieCopyId required.");
+        } else {
+            id = input.getMovieCopyID();
+        }
+
+        int result;
+
+        // Making sure there are no synchronization errors.
+        synchronized (queryEndpoint) {
+            // Mark deleted = 1 to the movie copy we want deleted.
+            queryEndpoint.execute("update MovieCopy " +
+                                     "set deleted = 1 " +
+                                     "where id = " + id);
+
+            result = queryEndpoint.getUpdateCount();
+        }
+        // The query should change exactly one row.
+        // In any other case, it failed.
+        return result == 1;
+    }
 }

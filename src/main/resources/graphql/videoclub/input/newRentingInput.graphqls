@@ -1,3 +1,4 @@
+# Input type for inputs regarding the creation of new rents.
 input NewRentingInput {
     # The id of the customer that rents a movie copy.
     customerID: ID!

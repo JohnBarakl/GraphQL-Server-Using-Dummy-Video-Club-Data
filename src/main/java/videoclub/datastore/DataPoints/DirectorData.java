@@ -65,7 +65,7 @@ public class DirectorData {
                 .append("where MovieTitleParticipants.participationRole = \"Director\" ");
 
         if (director.getId() != null){ // id is provided
-            sqlQuery.append(String.format("and id = %dataSource ", director.getId()));
+            sqlQuery.append(String.format("and id = %d ", director.getId()));
         }
 
         if (director.getName() != null){ // Actor's name is provided.
@@ -90,7 +90,7 @@ public class DirectorData {
         }
 
         String sqlQuery = "select Person.id, Person.name " +
-                "from Person inner join MovieTitleParticipants on MovieTitleParticipants.Person_id = MovieTitle.id " +
+                "from Person inner join MovieTitleParticipants on MovieTitleParticipants.Person_id = Person.id " +
                 "where MovieTitleParticipants.MovieTitle_id = " + movieTitle.getId() +
                 " and MovieTitleParticipants.participationRole = \"Director\""; // We want the directors of this movie. An actor may also be a director.
 

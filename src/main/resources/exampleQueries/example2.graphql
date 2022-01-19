@@ -1,9 +1,11 @@
-mutation{
-    createCustomer(input: {
-        fullName:"Raymond C. Montgomery"
-        address:"211 Lynn Avenue"
-        phoneNumber: "715-533-4965"
-    }) {
+mutation {
+    createCustomer(
+        input: {
+            fullName: "Raymond C. Montgomery"
+            address: "211 Lynn Avenue"
+            phoneNumber: "715-533-4965"
+        }
+    ) {
         id
         fullName
         address

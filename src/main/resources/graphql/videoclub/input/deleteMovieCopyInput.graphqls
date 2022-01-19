@@ -1,0 +1,5 @@
+# Input type for inputs regarding the deletion of an existing movie copy.
+input DeleteMovieCopyInput{
+    # The id of the movie copy that should be deleted.
+    movieCopyID: ID!
+}

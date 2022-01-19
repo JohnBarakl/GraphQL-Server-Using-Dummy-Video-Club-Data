@@ -5,9 +5,7 @@ import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.springframework.stereotype.Component;
 import videoclub.graphql.Application;
 import videoclub.graphql.server.domain.videoclub.*;
-import videoclub.graphql.server.domain.videoclub.input.CreateCustomerInput;
-import videoclub.graphql.server.domain.videoclub.input.NewRentingInput;
-import videoclub.graphql.server.domain.videoclub.input.ReturnInput;
+import videoclub.graphql.server.domain.videoclub.input.*;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -50,5 +48,27 @@ public class MutationResolver implements GraphQLMutationResolver {
      */
     public RentTransaction registerReturn(ReturnInput returnInput) throws SQLException {
         return Application.dataSource.aboutRentTransactions().updateRentTransaction(returnInput);
+    }
+
+    /**
+     * Creates and inserts a new movie copy based on the data given.
+     * @param input The input object on which the new movie copy will be created.
+     * @return the new movie copy created, as an object.
+     * @throws SQLException If a database access error occurs.
+     * @throws IllegalArgumentException if one or more required fields are missing.
+     */
+    public MovieCopy registerNewMovieCopy(NewMovieCopyInput input) throws SQLException {
+        return Application.dataSource.aboutMovieCopies().insertNewMovieCopy(input);
+    }
+
+    /**
+     * Deletes an existing movie copy based on the data given.
+     * @param input The input object on which the movie copy will be deleted.
+     * @return the success state of the deleting process.
+     * @throws SQLException If a database access error occurs.
+     * @throws IllegalArgumentException if one or more required fields are missing.
+     */
+    public Boolean deleteMovieCopy(DeleteMovieCopyInput input) throws SQLException {
+        return Application.dataSource.aboutMovieCopies().deleteMovieCopy(input);
     }
 }

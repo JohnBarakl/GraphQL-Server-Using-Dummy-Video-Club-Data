@@ -1,0 +1,7 @@
+mutation {
+    registerReturn(input: { rentID: 4, date: "2022-01-18T18:36:00+02:00" }) {
+        id
+        dateFrom
+        dateTo
+    }
+}
