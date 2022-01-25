@@ -1,12 +1,12 @@
+# Complex query showcase: Show movie details of movies in the category "Crime".
 query {
-    getRents(priceFrom: 3, priceTo: 10) {
-        movie {
-            id
-            movieTitle {
-                title
+    getCategory(name: "Crime") {
+        moviesInCategory {
+            title
+            description
+            directors {
+                name
             }
-            rentPrice
-            medium
         }
     }
 }

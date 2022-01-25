@@ -1,3 +1,5 @@
+# Change mutation showcase: Register the rent with id = 4 as returned at the specified date.
+# After that, show the rent's id and date rented and returned.
 mutation {
     registerReturn(input: { rentID: 4, date: "2022-01-18T18:36:00+02:00" }) {
         id

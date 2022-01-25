@@ -172,11 +172,11 @@ public class RentTransactionData {
      * @param priceFrom price lower limit. null value means no lower limit.
      * @param priceTo price upper limit. null value means no upper limit.
      * @param dateFrom date lower limit. null value means no lower limit.
-     * @param dateTo date upper limit. null value means no upper limit.
+     * @param dateFromUpto date upper limit. null value means no upper limit.
      * @return A list with the filtered data.
      * @throws SQLException If a database access error occurs.
      */
-    public RentTransaction[] retrieveRentTransactionsFiltered(Float priceFrom, Float priceTo, OffsetDateTime dateFrom, OffsetDateTime dateTo) throws SQLException {
+    public RentTransaction[] retrieveRentTransactionsFiltered(Float priceFrom, Float priceTo, OffsetDateTime dateFrom, OffsetDateTime dateFromUpto) throws SQLException {
         StringBuilder sqlQuery = new StringBuilder();
         sqlQuery.append("select id, price, dateFrom, dateTo ")
                 .append("from RentTransaction ");
@@ -217,8 +217,8 @@ public class RentTransactionData {
             sqlQuery.append(" dateFrom >= \"").append( dateFrom ).append("\"");
         }
 
-        // Check if it has been given a dateTo filter.
-        if (dateTo != null){
+        // Check if it has been given a dateFromUpto filter.
+        if (dateFromUpto != null){
             if (getAll) { // If it has another filter to chain into where condition.
                 getAll = false;
                 sqlQuery.append("where ");
@@ -226,7 +226,7 @@ public class RentTransactionData {
                 sqlQuery.append(" and");
             }
 
-            sqlQuery.append(" dateTo <= \"").append( dateTo ).append("\"");
+            sqlQuery.append(" dateFrom <= \"").append(dateFromUpto).append("\"");
 
         }
 
@@ -264,6 +264,8 @@ public class RentTransactionData {
         if (newRentingInput.getPrice() != null){
             columns.append("price, ");
             values.append("'").append(newRentingInput.getPrice()).append("', ");
+        } else {
+            throw new IllegalArgumentException("Price required.");
         }
 
         // Check if dateFrom was provided.
@@ -271,7 +273,7 @@ public class RentTransactionData {
             throw new IllegalArgumentException("Date from required.");
         } else {
             columns.append("dateFrom, ");
-            values.append("'").append(newRentingInput.getDateFrom()).append("'', ");
+            values.append("'").append(newRentingInput.getDateFrom()).append("', ");
         }
 
 
@@ -294,7 +296,7 @@ public class RentTransactionData {
 
             ResultSet qResults = queryEndpoint.executeQuery(newIdQuery);
 
-            newRentId = qResults.getInt(0);
+            newRentId = qResults.getInt(1);
         }
         // Searching and returning the new customer object by id.
         // Only one is expected to be returned.
@@ -320,9 +322,9 @@ public class RentTransactionData {
                 new RentTransaction(returnInput.getRentID(), null, null, null)
         )[0];
 
-        // If the transaction already has an end date then it is already terminated: Invalid input.
+        // If the transaction already has an end date then it is already terminated: Return the completed one.
         if (specifiedTransaction.getDateTo() != null){
-            throw new IllegalArgumentException("Rent Transaction already completed.");
+            return retrieveRentTransactions(new RentTransaction(returnInput.getRentID(), null, null, null))[0];
         }
 
         // Check if the given date is null

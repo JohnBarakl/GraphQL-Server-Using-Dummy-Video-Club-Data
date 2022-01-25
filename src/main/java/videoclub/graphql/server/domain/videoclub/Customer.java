@@ -38,16 +38,6 @@ public class Customer {
         this.email = email;
     }
 
-    // TODO: Remove before final submission.
-    public Customer(int id) {
-        this.id = id;
-        this.fullName = "fullName";
-        this.dateOfBirth = null;
-        this.address = "address";
-        this.phoneNumber = "phoneNumber";
-        this.email = "email";
-    }
-
     public Integer getId() {
         return id;
     }

@@ -1,32 +1,27 @@
 scalar Date
 scalar DateTime
 
-# All available queries on this graphql server
+# All available queries on this graphql server.
 type Query {
-    # Returns one or more customers that match the arguments
+    # Returns one or more customers that match the arguments.
     # If all arguments provided are null, it returns all customers.
-    # If id is provided, other arguments are ignored.
     getCustomer(id: ID, name: String): [Customer!]
 
-    # Returns the category entity(-ies) with the specified name
-    # If the argument is null, it acts as a wildcard and all registered categories are returned.
-    # If id is provided, other arguments are ignored.
+    # Returns the category entity(-ies) with the specified name and/or id.
+    # If the arguments are null, it acts as a wildcard and all registered categories are returned.
     getCategory(id: ID, name: String): [Category!]
 
-    # Returns the actor entity(-ies) with the specified name
-    # If the argument is null, it acts as a wildcard and all registered categories are returned.
-    # If id is provided, other arguments are ignored.
+    # Returns the actor entity(-ies) with the specified name and/or id.
+    # If the arguments are null, it acts as a wildcard and all registered actors are returned.
     getActor(id: ID, name: String): [Actor!]
 
-    # Returns the director entity(-ies) with the specified name
-    # If the argument is null, it acts as a wildcard and all registered categories are returned.
-    # If id is provided, other arguments are ignored.
+    # Returns the director entity(-ies) with the specified name and/or id.
+    # If the arguments are null, it acts as a wildcard and all registered directors are returned.
     getDirector(id: ID, name: String): [Director!]
 
     # Returns one (or more) movie copies.
-    # If the id argument is used, the others will be ignored.
-    # Otherwise, a list containing movie copies that satisfy all of the arguments will be returned.
-    getMovieCopy(id: ID, movieName: String, medium: Medium, format: MovieFormat): [MovieCopy!]
+    # A list containing movie copies that satisfy all of the arguments will be returned.
+    getMovieCopy(id: ID, medium: Medium, format: MovieFormat): [MovieCopy!]
 
     # Returns the list of movie copies with rent price between from and upTo.
     # If one of the price limits is null, there will be no lower and/or upper limit respectively.
@@ -38,17 +33,17 @@ type Query {
     getMovies(id: ID, title: String, releaseDate: Date, ratingFrom: Float, ratingTo: Float): [MovieTitle!]
 
     # Returns one (or more) production companies.
-    # If the id argument is used, the others will be ignored.
-    # Otherwise, a list containing production companies that satisfy all of the arguments provided, will be returned.
+    # A list containing production companies that satisfy all of the arguments provided, will be returned.
     getProductionCompany(id: ID, name: String): [ProductionCompany!]
 
-    # Returns one (or more) rentTransactions companies.
+    # Returns one (or more) rentTransactions.
     # If the id argument is used, the others will be ignored.
     # Otherwise, a list containing rentTransactions that satisfy all of the arguments will be returned.
     #
     # Notice: Customer and MovieCopy parameters are not provided. Instead use the fields of the specified
     # types.
     #
-    # The priceFrom and priceTo are considered the limits of ranges of prices. The same is true for dateFrom/dateTo.
-    getRents(id: ID, priceFrom: Float, priceTo: Float, dateFrom: DateTime, dateTo: DateTime): [RentTransaction!]
+    # The priceFrom and priceTo are considered the limits of ranges of prices.
+    # Similarly for dateFrom/dateFromUpto about the date of rent.
+    getRents(id: ID, priceFrom: Float, priceTo: Float, dateFrom: DateTime, dateFromUpto: DateTime): [RentTransaction!]
 }

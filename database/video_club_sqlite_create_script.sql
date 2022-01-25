@@ -1,5 +1,5 @@
 --
--- File generated with SQLiteStudio v3.3.3 on Sun Jan 16 00:08:53 2022
+-- File generated with SQLiteStudio v3.3.3 on Wed Jan 26 00:27:18 2022
 --
 -- Text encoding used: UTF-8
 --
@@ -43,25 +43,7 @@ CREATE TABLE Medium (
                         PRIMARY KEY(id));
 
 -- Table: MovieCopy
-CREATE TABLE MovieCopy (
-                           id INTEGER  NOT NULL  ,
-                           MovieFormat_id INTEGER  NOT NULL  ,
-                           MovieTitle_id INTEGER  NOT NULL  ,
-                           Medium_id INTEGER  NOT NULL  ,
-                           rentPrice FLOAT  NOT NULL    ,
-                           PRIMARY KEY(id)      ,
-                           FOREIGN KEY(Medium_id)
-                               REFERENCES Medium(id)
-                               ON DELETE NO ACTION
-                               ON UPDATE NO ACTION,
-                           FOREIGN KEY(MovieTitle_id)
-                               REFERENCES MovieTitle(id)
-                               ON DELETE NO ACTION
-                               ON UPDATE NO ACTION,
-                           FOREIGN KEY(MovieFormat_id)
-                               REFERENCES MovieFormat(id)
-                               ON DELETE NO ACTION
-                               ON UPDATE NO ACTION);
+CREATE TABLE MovieCopy (id INTEGER NOT NULL, MovieFormat_id INTEGER NOT NULL, MovieTitle_id INTEGER NOT NULL, Medium_id INTEGER NOT NULL, rentPrice FLOAT NOT NULL, deleted BOOLEAN DEFAULT (0), PRIMARY KEY (id), FOREIGN KEY (Medium_id) REFERENCES Medium (id) ON DELETE NO ACTION ON UPDATE NO ACTION, FOREIGN KEY (MovieTitle_id) REFERENCES MovieTitle (id) ON DELETE NO ACTION ON UPDATE NO ACTION, FOREIGN KEY (MovieFormat_id) REFERENCES MovieFormat (id) ON DELETE NO ACTION ON UPDATE NO ACTION);
 
 -- Table: MovieFormat
 CREATE TABLE MovieFormat (

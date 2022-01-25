@@ -1,3 +1,4 @@
+# Create mutation showcase: Create a new customer.
 mutation {
     createCustomer(
         input: {

@@ -1,0 +1,4 @@
+# Delete mutation showcase: Delete the movie copy with id = 13.
+mutation {
+    deleteMovieCopy(input: {movieCopyID: 13})
+}

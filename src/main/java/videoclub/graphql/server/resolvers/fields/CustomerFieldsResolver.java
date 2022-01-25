@@ -41,25 +41,8 @@ public class CustomerFieldsResolver implements GraphQLResolver<Customer> {
      * @throws SQLException if there is a communication error with the data source.
      */
     public RentTransaction[] rentTransactions(Customer customer, TransactionStatus status) throws SQLException {
-        // No need to filter out results, return the whole list.
-        if (status == TransactionStatus.All){
-            return Application.dataSource.aboutRentTransactions().retrieveRentTransactionsFromCustomer(customer);
-        } else if (status == TransactionStatus.Active){ // Filter out completed transactions.
-            ArrayList<RentTransaction> queryResults = new ArrayList<>(
-                    List.of(Application.dataSource.aboutRentTransactions().retrieveRentTransactionsFromCustomer(customer))
-            );
-
-            Iterator<RentTransaction> transactionIterator = queryResults.iterator();
-            while (transactionIterator.hasNext()){
-                RentTransaction nextElement = transactionIterator.next();
-
-                if (nextElement.getDateTo() == null){
-                    transactionIterator.remove();
-                }
-            }
-
-            return queryResults.toArray(new RentTransaction[0]);
-        } else { // Filter out incomplete transactions.
+        // Filter out complete transactions.
+        if (status == TransactionStatus.Active){
             ArrayList<RentTransaction> queryResults = new ArrayList<>(
                     List.of(Application.dataSource.aboutRentTransactions().retrieveRentTransactionsFromCustomer(customer))
             );
@@ -74,6 +57,23 @@ public class CustomerFieldsResolver implements GraphQLResolver<Customer> {
             }
 
             return queryResults.toArray(new RentTransaction[0]);
+        } else if (status == TransactionStatus.Completed){ // Filter out incomplete transactions.
+            ArrayList<RentTransaction> queryResults = new ArrayList<>(
+                    List.of(Application.dataSource.aboutRentTransactions().retrieveRentTransactionsFromCustomer(customer))
+            );
+
+            Iterator<RentTransaction> transactionIterator = queryResults.iterator();
+            while (transactionIterator.hasNext()){
+                RentTransaction nextElement = transactionIterator.next();
+
+                if (nextElement.getDateTo() == null){
+                    transactionIterator.remove();
+                }
+            }
+
+            return queryResults.toArray(new RentTransaction[0]);
+        } else { // No need to filter out results (either null or All), return the whole list.
+            return Application.dataSource.aboutRentTransactions().retrieveRentTransactionsFromCustomer(customer);
         }
     }
 

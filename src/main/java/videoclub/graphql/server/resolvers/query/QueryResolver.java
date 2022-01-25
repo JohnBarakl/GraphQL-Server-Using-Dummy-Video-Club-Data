@@ -54,9 +54,9 @@ public class QueryResolver implements GraphQLQueryResolver {
 
     /**
      * Resolves the GraphQL query:
-     * getMovieCopy(id: ID, movieName: String, medium: Medium, format: MovieFormat): [MovieCopy!].
+     * getMovieCopy(id: ID, medium: Medium, format: MovieFormat): [MovieCopy!].
      */
-    public MovieCopy[] getMovieCopy(Integer id, String movieName, MovieCopy.Medium medium, MovieCopy.MovieFormat format) throws SQLException {
+    public MovieCopy[] getMovieCopy(Integer id, MovieCopy.Medium medium, MovieCopy.MovieFormat format) throws SQLException {
         MovieCopy template =  new MovieCopy(id, medium, format, null);
         return Application.dataSource.aboutMovieCopies().retrieveMovieCopy(template);
     }
@@ -95,13 +95,13 @@ public class QueryResolver implements GraphQLQueryResolver {
 
     /**
      * Resolves the GraphQL query:
-     * getRents(id: ID, priceFrom: Float, priceTo: Float, dateFrom: DateTime, dateTo: DateTime): [RentTransaction!].
+     * getRents(id: ID, priceFrom: Float, priceTo: Float, dateFrom: DateTime, dateFromUpto: DateTime): [RentTransaction!].
      */
-    public RentTransaction[] getRents(Integer id, Float priceFrom, Float priceTo, OffsetDateTime dateFrom, OffsetDateTime dateTo) throws SQLException {
+    public RentTransaction[] getRents(Integer id, Float priceFrom, Float priceTo, OffsetDateTime dateFrom, OffsetDateTime dateFromUpto) throws SQLException {
         if ( id!= null){ // If the id argument is used, the others will be ignored.
             return Application.dataSource.aboutRentTransactions().retrieveRentTransactions(new RentTransaction(id, null, null, null));
         } else {
-            return Application.dataSource.aboutRentTransactions().retrieveRentTransactionsFiltered(priceFrom, priceTo, dateFrom, dateTo);
+            return Application.dataSource.aboutRentTransactions().retrieveRentTransactionsFiltered(priceFrom, priceTo, dateFrom, dateFromUpto);
         }
     }
 }

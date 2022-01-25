@@ -19,7 +19,5 @@ graphql:
         query: classpath:exampleQueries/example2.graphql
       - name: Change mutation
         query: classpath:exampleQueries/example3.graphql
-      - name: Debug # TODO: REMOVE
-        query: classpath:exampleQueries/debug.graphql
   voyager:
     enabled: true

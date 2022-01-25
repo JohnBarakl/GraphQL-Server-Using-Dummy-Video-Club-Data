@@ -37,7 +37,7 @@ public class ActorData {
      */
     public Actor[] retrieveActors(Actor actor) throws SQLException {
         StringBuilder sqlQuery = new StringBuilder();
-        sqlQuery.append("select Person.id, Person.name ")
+        sqlQuery.append("select distinct Person.id, Person.name ")
                 .append("from Person inner join MovieTitleParticipants on Person.id = MovieTitleParticipants.Person_id ")
                 .append("where MovieTitleParticipants.participationRole = \"Actor\" ");
 
@@ -83,7 +83,7 @@ public class ActorData {
      */
     public Actor[] retrieveActorsOfMovieTitle(MovieTitle movieTitle) throws SQLException {
         StringBuilder sqlQuery = new StringBuilder();
-        sqlQuery.append("select Person.id, Person.name ")
+        sqlQuery.append("select distinct Person.id, Person.name ")
                 .append("from Person inner join MovieTitleParticipants on MovieTitleParticipants.Person_id = Person.id ")
                 .append("where MovieTitleParticipants.MovieTitle_id = ").append(movieTitle.getId())
                 .append(" and MovieTitleParticipants.participationRole = \"Actor\""); // We want the actors of this movie. An actor may also be a director.

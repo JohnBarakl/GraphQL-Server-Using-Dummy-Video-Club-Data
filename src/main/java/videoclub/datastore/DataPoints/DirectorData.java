@@ -60,7 +60,7 @@ public class DirectorData {
      */
     public Director[] retrieveDirectors(Director director) throws SQLException {
         StringBuilder sqlQuery = new StringBuilder();
-        sqlQuery.append("select Person.id, Person.name ")
+        sqlQuery.append("select distinct Person.id, Person.name ")
                 .append("from Person inner join MovieTitleParticipants on Person.id = MovieTitleParticipants.Person_id ")
                 .append("where MovieTitleParticipants.participationRole = \"Director\" ");
 
@@ -89,7 +89,7 @@ public class DirectorData {
             throw new IllegalArgumentException("The DirectorId must not be null.");
         }
 
-        String sqlQuery = "select Person.id, Person.name " +
+        String sqlQuery = "select distinct Person.id, Person.name " +
                 "from Person inner join MovieTitleParticipants on MovieTitleParticipants.Person_id = Person.id " +
                 "where MovieTitleParticipants.MovieTitle_id = " + movieTitle.getId() +
                 " and MovieTitleParticipants.participationRole = \"Director\""; // We want the directors of this movie. An actor may also be a director.

@@ -20,13 +20,7 @@ public class Application {
             e.printStackTrace();
         }
 
-        try {
-            SpringApplication.run(Application.class, args);
-        } catch (Exception e){
-            System.err.println("=========================  Exception Caught  =========================");
-            e.printStackTrace();
-            System.err.println("=========================  End Of Exception  =========================");
-        }
+        SpringApplication.run(Application.class, args);
     }
 
 }
